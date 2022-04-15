@@ -23,9 +23,9 @@ def test_state2():
             [EMPTY, EMPTY, EMPTY]]
 
 if __name__ == "__main__":
-    # board = initial_state()
+    board = initial_state()
     # board = test_state()
-    board = test_state2()
+    # board = test_state2()
 
     # for i in range(3):
     #     for j in range(3):

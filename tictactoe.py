@@ -2,9 +2,9 @@
 Tic Tac Toe Player
 """
 
-from asyncio.windows_events import NULL
 import copy
 import math
+from random import randint
 
 X = "X"
 O = "O"
@@ -138,8 +138,27 @@ def minimax(board):
 
     Player X wins if Utility returns 1, so X wants to maximise the result.
     O wants to minimize utility.
+
+    If the AI starts as X, often it would place first move in a edge, which is not optimal...
+    So I import random and let the AI pick either center or corner randomly
     """  
-    move = NULL
+    
+    # check if board is empty (first move)
+    if board == initial_state():
+        random = randint(1, 5)
+        if random == 1:
+            return (0, 0)
+        elif random == 2:
+            return (0, 2)
+        elif random == 3:
+            return (2, 0)
+        elif random == 4:
+            return (2, 2)
+        elif random == 5:
+            return (1, 1)
+        print(random)
+
+    move = None
 
     if terminal(board):
         return None
