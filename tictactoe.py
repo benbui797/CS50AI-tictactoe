@@ -72,10 +72,9 @@ def result(board, action):
     i, j = action
     
     if board[i][j] is not EMPTY:
-        raise RuntimeError
+        raise Exception("Invalid Action")
         
     new_board = copy.deepcopy(board)
-
     new_board[i][j] = player(board)
 
     return new_board
@@ -136,11 +135,13 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
 
-    Player X wins if Utility returns 1, so X wants to maximise the result.
-    O wants to minimize utility.
+    X wins if Utility returns 1, optimum move for X is worst move for O.
+    (blocking O is most important, perfect games always end up as a tie)
 
-    If the AI starts as X, often it would place first move in a edge, which is not optimal...
-    So I import random and let the AI pick either center or corner randomly
+    If the AI starts as X, often it would place first move on an edge (0,1), which is not optimal...
+    So I import random and let the AI pick either center or corner randomly.
+    
+    This also speeds up the first move a lot!
     """  
     
     # check if board is empty (first move)
@@ -157,24 +158,21 @@ def minimax(board):
         elif random == 5:
             return (1, 1)
         print(random)
-
+  
     move = None
 
-    if terminal(board):
-        return None
-    
-    # if player = X -> Optimum = 1 -> Maximise v
+    # if player = X -> Optimum = 1 -> Pick highest minimum v
     if player(board) == X:
         v = -math.inf
 
         # loop through actions and store highest possible v value
         for action in actions(board):
-            action_v = max_value(result(board, action))
-            print(f"{action_v=} {action=}") 
+            action_v = min_value(result(board, action))
+            # print(f"{action_v=} {action=}") 
             if action_v > v:
                 v = action_v
                 move = action
-                print(f"{v=} {move=}")
+                # print(f"{v=} {move=}")
             
     # else player = O -> optimum = -1 -> max_v as small as possible
     else:
@@ -182,12 +180,12 @@ def minimax(board):
 
         # loop through actions and store minimum possible v value
         for action in actions(board):            
-            action_v = min_value(result(board, action))  
-            print(f"{action_v=} {action=}")      
+            action_v = max_value(result(board, action))  
+            # print(f"{action_v=} {action=}")      
             if action_v < v:
                 v = action_v
                 move = action
-                print(f"{v=} {move=}")
+                # print(f"{v=} {move=}")
     
     # return best move                
     return move
@@ -207,6 +205,7 @@ def max_value(board):
     v = -math.inf
 
     for action in actions(board):
+        # print(f"max_{action=}")
         v = max(v, min_value(result(board, action)))
 
     return v
@@ -226,6 +225,7 @@ def min_value(board):
     v = math.inf
 
     for action in actions(board):
+        # print(f"min_{action=}")
         v = min(v, max_value(result(board, action)))
 
     return v
